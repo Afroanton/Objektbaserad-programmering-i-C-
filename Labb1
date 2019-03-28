@@ -1,0 +1,80 @@
+// Labb1.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
+
+#include "pch.h"
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+using namespace std;
+
+
+void read_file();
+
+struct address
+{
+	string street;
+	string city;
+	int zip;
+};
+struct Person
+{
+	string name;
+	string id;
+	address location;
+	
+};
+istream& operator>>(istream& in, Person& p)
+{
+	string zip1;
+	string zip2;
+	string zip3;
+	char tecken = ',';
+	string mellanrum = "  ";
+
+	getline(in, p.name);
+	getline(in, p.id);
+	getline(in, p.location.street, tecken);
+	in >> zip1;
+	in >> zip2;
+	zip3 = zip1 + zip2;
+	int zip = stoi(zip3);
+	p.location.zip = zip;
+	getline(in, p.location.city);
+
+
+
+	return in;
+};
+
+
+int main()
+{
+	
+	read_file();
+
+	
+
+
+	
+
+
+	
+	return 0;
+
+}
+void read_file()
+{
+
+	ifstream namefile("Text.txt");
+	vector<Person> vector_person;
+	Person p;
+	
+	for (int i = 0; i < 10; i++)
+	{
+		namefile >> p;
+		cout << p.name << " " << p.id << " " << p.location.street << " " << p.location.zip << " " << p.location.city << endl;
+	}
+	
+
+}

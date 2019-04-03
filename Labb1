@@ -6,10 +6,12 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <algorithm> 
+
 using namespace std;
 
 
-void read_file();
+
 
 struct address
 {
@@ -29,6 +31,7 @@ istream& operator>>(istream& in, Person& p)
 	string zip1;
 	string zip2;
 	string zip3;
+	string a;
 	char tecken = ',';
 	string mellanrum = "  ";
 
@@ -40,41 +43,109 @@ istream& operator>>(istream& in, Person& p)
 	zip3 = zip1 + zip2;
 	int zip = stoi(zip3);
 	p.location.zip = zip;
-	getline(in, p.location.city);
+	in >> p.location.city;
+	getline(in, a);
 
 
 
 	return in;
 };
 
-
+void read_file(vector<Person> &vector_person);
+void sok(vector<Person> vector_person);
+void sokc(vector<Person> vector_person, vector<Person> &vector_city);
 int main()
 {
-	
-	read_file();
-
-	
-
-
-	
-
-
-	
-	return 0;
-
-}
-void read_file()
-{
-
-	ifstream namefile("Text.txt");
 	vector<Person> vector_person;
-	Person p;
-	
-	for (int i = 0; i < 10; i++)
+	vector<Person> vector_city;
+	string val;
+	read_file(vector_person);
+	while (2 == 1 + 1)
 	{
-		namefile >> p;
-		cout << p.name << " " << p.id << " " << p.location.street << " " << p.location.zip << " " << p.location.city << endl;
+		cout << "[1]Sök del av personnam" << endl;
+		cout << "[2]Sök städer" << endl;
+		cout << "[3]Avsluta" << endl;
+		cin >> val;
+
+
+		if (val == "1")
+		{
+			sok(vector_person);
+		}
+		else if (val == "2")
+		{
+			sokc(vector_person, vector_city);
+		}
+		else if (val == "3")
+		{
+			return 0;
+		}
+		else
+		{
+			cout << "Ogiltigt alternativ!!!" << endl;
+		}
 	}
 	
 
+}
+
+	
+
+void read_file(vector<Person> &vector_person)
+{
+
+	ifstream namefile("Text.txt");
+	
+	Person p;
+	
+	
+	while (namefile.peek() != EOF)
+	{
+		namefile >> p;
+		
+		vector_person.push_back(p);
+	}
+		
+}
+void sok(vector<Person> vector_person)
+{
+	int counter = 0;
+	string sokord;
+	cout << "sök:  ";
+	cin >> sokord;
+	
+	for (int i = 0; i < vector_person.size(); i++)
+	{
+		 transform(vector_person[i].name.begin(), vector_person[i].name.end(), vector_person[i].name.begin(), ::tolower);
+		 size_t found = vector_person[i].name.find(sokord);
+		 if (found != string::npos)
+		 {
+			 counter++;
+		 }
+		
+
+	}
+	cout << counter << endl;
+	
+
+}
+void sokc(vector<Person> vector_person, vector<Person> &vector_city)
+{
+	string sokord;
+	cout << "sök:  ";
+	cin >> sokord;
+	transform(sokord.begin(), sokord.end(), sokord.begin(), ::toupper);
+
+	for (int j = 0; j < vector_person.size(); j++)
+	{
+		if (vector_person[j].location.city == sokord)
+		{
+			
+			vector_city.push_back(vector_person[j]);
+			cout << vector_person[j].name << " " << vector_person[j].location.city << endl;
+		}
+
+
+	}
+	
 }

@@ -55,42 +55,56 @@ istream& operator>>(istream& in, Person& p)
 	return in;
 };
 
-void read_file(vector<Person> &vector_person);
-void sok(vector<Person> vector_person);
-void sokc(vector<Person> vector_person, vector<Person> &vector_city);
+vector<Person> read_file(string namefile);
+size_t find_in_names(vector<Person> vector_person, string name_part);
+vector <Person> find_person_from_city(vector<Person>haystack, string city);
+
 
 
 int main()
 {
-	vector<Person> vector_person;
+	
+	
 	vector<Person> vector_city;
 	string val;
-
-	read_file(vector_person);
-
+	string name_part = "dfsd";
+	string city;
+	string namefile = "Text.txt";
+	size_t word_count;
+	vector<Person> vector_person = read_file(namefile);
+	vector<Person>vector_person_city;
+	
 	while (2 == 1 + 1)
 	{
 		cout << "[1]Sök del av personnam" << endl;
 		cout << "[2]Sök städer" << endl;
 		cout << "[3]Avsluta" << endl;
 		getline(cin, val);
-
-
 		if (val == "1")
 		{
-			sok(vector_person);
+			cout << "sök person: ";
+			getline(cin, name_part);
+			
+			word_count = find_in_names(vector_person, name_part);
+			cout << word_count << endl;
 		}
-		else if (val == "2")
+		if (val == "2")
 		{
-			sokc(vector_person, vector_city);
+			cout << "sök stad: ";
+			getline(cin, city);
+			vector_person_city = find_person_from_city(vector_person, city);
+			for (int j = 0; j < vector_person_city.size(); j++)
+			{
+				cout << vector_person_city[j].name << "," << vector_person_city[j].location.city << endl;
+			}
 		}
-		else if (val == "3")
+		if (val == "3")
 		{
 			return 0;
 		}
 		else
 		{
-			cout << "Ogiltigt alternativ!!!" << endl;
+			cout << "Ogiltigt alternativ" << endl;
 		}
 	}
 	
@@ -99,65 +113,62 @@ int main()
 
 	
 
-void read_file(vector<Person> &vector_person)
+vector<Person> read_file(string namefile)
 {
-
-	ifstream namefile("Text.txt");
+	ifstream filename(namefile);
+	vector<Person> vector_person;
+	Person person;
 	
-	Person p;
-	
-	
-	while (namefile.peek() != EOF)
+	while (filename.peek() != EOF)
 	{
-		namefile >> p;
+		filename >> person;
 		
-		vector_person.push_back(p);
+		vector_person.push_back(person);
 	}
+	return vector_person;
 		
 }
-void sok(vector<Person> vector_person)
+
+
+size_t find_in_names(vector<Person> vector_person, string name_part)
 {
-	string mellanrum = "   ";
+	transform(name_part.begin(), name_part.end(), name_part.begin(), ::toupper);
 	int counter = 0;
-	string sokord;
-	
-	cout << "sök:  ";
-	getline(cin, sokord);
-	transform(sokord.begin(), sokord.end(), sokord.begin(), ::toupper);
-	
 	
 	for (int i = 0; i < vector_person.size(); i++)
 	{
 		 
-		 size_t found = vector_person[i].name.find(sokord);
+		 size_t found = vector_person[i].name.find(name_part);
 		 if (found != string::npos)
 		 {
+			 
 			 counter++;
 		 }
 		
 
 	}
-	cout << counter << endl;
 	
-
+	
+	return counter;
 }
-void sokc(vector<Person> vector_person, vector<Person> &vector_city)
-{
-	string sokord;
-	cout << "sök:  ";
-	getline(cin, sokord);
-	transform(sokord.begin(), sokord.end(), sokord.begin(), ::toupper);
 
-	for (int j = 0; j < vector_person.size(); j++)
+
+vector<Person>find_person_from_city(vector<Person>haystack, string city)
+{
+
+	vector<Person>vector_person_city;
+	transform(city.begin(), city.end(), city.begin(), ::toupper);
+
+	for (int j = 0; j < haystack.size(); j++)
 	{
-		if (vector_person[j].location.city == sokord)
+		if (haystack[j].location.city == city)
 		{
 			
-			vector_city.push_back(vector_person[j]);
-			cout << vector_person[j].name << " " << vector_person[j].location.city << endl;
+			vector_person_city.push_back(haystack[j]);
+			
 		}
 
 
 	}
-	
+	return vector_person_city;
 }

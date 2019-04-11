@@ -1,0 +1,40 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main()
+{
+	string val;
+	int *pointer;
+	cout << "[1] Allokera 1GiB";
+	cout << "[2] Allokera 1KiB";
+	cout << "[3] Allokera 1GiB i loop";
+	cout << "[4] Allokera 1GiB i loop";
+	getline(cin, val);
+	if (val == "1")
+	{
+		pointer = new int[268435456];
+	}
+	if (val == "2")
+	{
+		pointer = new int[256];
+	}
+	if (val == "3")
+	{
+		while (true)
+		{
+			pointer = new int[268435456];
+		}
+	}
+	if (val == "4")
+	{
+		while (true)
+		{
+			pointer = new int[256];
+		}
+
+	}
+
+
+	return 0;
+}

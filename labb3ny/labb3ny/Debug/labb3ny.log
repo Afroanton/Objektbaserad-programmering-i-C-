@@ -1,0 +1,3 @@
+﻿  linked_list.cpp
+c:\users\anton\source\repos\labb3ny\labb3ny\linked_list.cpp(258): warning C4715: 'linked_list::at': not all control paths return a value
+  labb3ny.vcxproj -> C:\Users\anton\source\repos\labb3ny\Debug\labb3ny.exe

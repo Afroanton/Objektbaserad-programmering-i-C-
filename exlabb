@@ -1,0 +1,60 @@
+#include <iostream>
+#include <string>
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
+#include <vector>
+#include "maze.h"
+using namespace std;
+
+int main()
+{
+	srand(time(0));
+	string menyval;
+	while (true)
+	{
+		cout << "kör" << endl;
+		cin >> menyval;
+		maze maze1;
+		if (menyval == "1")
+		{
+			int riktning; //0=höger 1=ner 2=vänster 3=upp
+			
+			vector<pair <int,int> >stack;
+			maze1.matris[1][0]='+'; //rad sen kolumn
+			maze1.matris[5][6] = '-'; //rad sen kolumn
+			for (int i = 0; i < 7; i++)
+			{
+				for (int j = 0; j < 7; j++)
+				{
+					cout << maze1.matris[i][j];
+				}
+				cout << endl;
+			}
+			stack.push_back(make_pair(1, 0));
+			riktning = rand() % 4;
+			cout << riktning << endl;
+			if (riktning == 0)
+			{
+				stack.push_back(make_pair(stack[0].second + 1, stack[0].first));
+			}
+			else if (riktning == 1)
+			{
+
+			}
+			else if (riktning == 2)
+			{
+
+			}
+			else
+			{
+
+			}
+			
+			
+
+		}
+
+	}
+	
+
+}

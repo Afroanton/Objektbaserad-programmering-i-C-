@@ -3,53 +3,172 @@
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
 #include <vector>
+#include <fstream>
 #include "maze.h"
 using namespace std;
+void print(maze tempmatris)   //skriver ut labyrinten
+{
+	for (int i = 0; i < 7; i++)
+	{
+		for (int j = 0; j < 7; j++)
+		{
+			cout << tempmatris.matris[i][j];
+		}
+		cout << endl;
+	}
+}
+void printklar(maze tempmatris)  //skriver ut den rätta vägen till labyrinten
+{
+	for (int i = 0; i < 7; i++)  //tömer labyrinten
+	{
+		for (int j = 0; j < 7; j++)
+		{
+			if (tempmatris.matris[i][j] == 'a')
+			{
+				tempmatris.matris[i][j] = ' ';
+			
+			}
+			cout << tempmatris.matris[i][j];
+		}
+		cout << endl;
+	}
+	for (int i = 0; i < tempmatris.stack.size()-1; i++)  //lägger in rätta vägen till labyrinten
+	{
+		tempmatris.matris[tempmatris.stack[i].first][tempmatris.stack[i].second] = 'a';
+	}
+	print(tempmatris);
+}
+bool check(maze mazetest,int vectorcounter)  //kollar hur många möjliga vägar de finns
+{
+	int counter = 0;//antal möjliga vägar
+	if (mazetest.matris[mazetest.stack[vectorcounter].first][mazetest.stack[vectorcounter].second+1] != '*' && mazetest.matris[mazetest.stack[vectorcounter].first][mazetest.stack[vectorcounter].second+1] != 'a')
+	{ //höger
+		counter++;
+	}
+	if (mazetest.matris[mazetest.stack[vectorcounter].first][mazetest.stack[vectorcounter].second-1] != '*' && mazetest.matris[mazetest.stack[vectorcounter].first][mazetest.stack[vectorcounter].second-1] != 'a')
+	{  //vänster
+		counter++;
+	}
+	if (mazetest.matris[mazetest.stack[vectorcounter].first+1][mazetest.stack[vectorcounter].second] != '*' && mazetest.matris[mazetest.stack[vectorcounter].first+1][mazetest.stack[vectorcounter].second] != 'a')
+	{ //ner
+		counter++;
+	}
+	if (mazetest.matris[mazetest.stack[vectorcounter].first-1][mazetest.stack[vectorcounter].second] != '*' && mazetest.matris[mazetest.stack[vectorcounter].first-1][mazetest.stack[vectorcounter].second] != 'a')
+	{ //upp
+		counter++;
+	}
 
+	if (counter > 1) //om de finns mer än en möjlig väg retunerar den true
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+		
+}
 int main()
 {
-	srand(time(0));
+	
+	
+
+	string r;
+	int vectorcounter = 0;
+	int valcounter = 0;
+	ifstream a("maze.txt");
 	string menyval;
+	size_t counter = 0;
+	maze maze1;
+	maze1.stack.push_back(make_pair(1, 1));
 	while (true)
 	{
+		char read;
 		cout << "kör" << endl;
 		cin >> menyval;
-		maze maze1;
+		
 		if (menyval == "1")
 		{
-			int riktning; //0=höger 1=ner 2=vänster 3=upp
-			
-			vector<pair <int,int> >stack;
-			maze1.matris[1][0]='+'; //rad sen kolumn
-			maze1.matris[5][6] = '-'; //rad sen kolumn
-			for (int i = 0; i < 7; i++)
+			while (a.peek() != EOF)
 			{
-				for (int j = 0; j < 7; j++)
+				a.get(read);
+				maze1.vectortemp.push_back(read);
+				counter++;
+				
+				if (counter%7 ==0)
 				{
-					cout << maze1.matris[i][j];
+					getline(a, r);
+					maze1.matris.push_back(maze1.vectortemp);
+					maze1.vectortemp.clear();
 				}
-				cout << endl;
+				
 			}
-			stack.push_back(make_pair(1, 0));
-			riktning = rand() % 4;
-			cout << riktning << endl;
-			if (riktning == 0)
+			print(maze1); //rad sen kolumn
+			while (maze1.matris[maze1.stack[vectorcounter].first][maze1.stack[vectorcounter].second] != '-')
 			{
-				stack.push_back(make_pair(stack[0].second + 1, stack[0].first));
-			}
-			else if (riktning == 1)
-			{
+				if (check(maze1, vectorcounter) == true)
+				{
+					maze1.val.push_back(make_pair(maze1.stack[vectorcounter].first, maze1.stack[vectorcounter].second));
+					valcounter++;
+				}
+				if (maze1.matris[maze1.stack[vectorcounter].first][maze1.stack[vectorcounter].second +1] != '*' && maze1.matris[maze1.stack[vectorcounter].first][maze1.stack[vectorcounter].second+1] != 'a')
+				{
+					maze1.matris[maze1.stack[vectorcounter].first][maze1.stack[vectorcounter].second] = 'a';
+					print(maze1);
+					maze1.stack.push_back(make_pair(maze1.stack[vectorcounter].first, maze1.stack[vectorcounter].second+1));
+					vectorcounter++;
+					cout << "höger" << endl;
+				}
+				else if (maze1.matris[maze1.stack[vectorcounter].first][maze1.stack[vectorcounter].second-1] != '*' && maze1.matris[maze1.stack[vectorcounter].first][maze1.stack[vectorcounter].second-1] != 'a')
+				{
+					maze1.matris[maze1.stack[vectorcounter].first][maze1.stack[vectorcounter].second] = 'a';
+					print(maze1);
+					maze1.stack.push_back(make_pair(maze1.stack[vectorcounter].first, maze1.stack[vectorcounter].second-1));
+					vectorcounter++;
+					cout << "vänster" << endl;
+				}
+				else if (maze1.matris[maze1.stack[vectorcounter].first+1][maze1.stack[vectorcounter].second] != '*' && maze1.matris[maze1.stack[vectorcounter].first+1][maze1.stack[vectorcounter].second] != 'a')
+				{
+					maze1.matris[maze1.stack[vectorcounter].first][maze1.stack[vectorcounter].second] = 'a';
+					print(maze1);
+					maze1.stack.push_back(make_pair(maze1.stack[vectorcounter].first+1, maze1.stack[vectorcounter].second));
+					vectorcounter++;
+					cout << "ner" << endl;
+				}
+				else if (maze1.matris[maze1.stack[vectorcounter].first-1][maze1.stack[vectorcounter].second] != '*' && maze1.matris[maze1.stack[vectorcounter].first-1][maze1.stack[vectorcounter].second] != 'a')
+				{
+					maze1.matris[maze1.stack[vectorcounter].first][maze1.stack[vectorcounter].second] = 'a';
+					print(maze1);
+					maze1.stack.push_back(make_pair(maze1.stack[vectorcounter].first-1, maze1.stack[vectorcounter].second));
+					vectorcounter++;
+					cout << "upp" << endl;
+				}
+				else
+				{
+					maze1.matris[maze1.stack[vectorcounter].first][maze1.stack[vectorcounter].second] = 'a';
+					while (maze1.stack[vectorcounter].first != maze1.val[valcounter - 1].first || maze1.stack[vectorcounter].second != maze1.val[valcounter - 1].second)
+					{
+						
+						maze1.stack.pop_back();
+						vectorcounter--;
+						cout << "test";
+					}
+					
+				}
 
 			}
-			else if (riktning == 2)
-			{
-
-			}
-			else
-			{
-
-			}
+			printklar(maze1);
 			
+
+			
+			
+			
+
+			
+			//0=höger 1=ner 2=vänster 3=upp 
+			
+			
+
 			
 
 		}
